@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.stereotype.Service;
 
+import com.accenture.UniversitaRest.dto.StudenteDto;
 import com.accenture.UniversitaRest.model.Studente;
 import com.accenture.UniversitaRest.repository.StudenteRepository;
 
@@ -15,12 +16,17 @@ public class StudenteService {
     @Autowired
     private StudenteRepository studenteRepository;
 
-    public Studente save(Studente studente){
+    public Studente save(StudenteDto studenteDto){
+        //questo metodo converte il dto nell'entità che andrà salvata nel db
+        Studente studente = dtoToEntity(studenteDto);
+
         return studenteRepository.save(studente);
     }
 
-    public Studente update(Integer matricola, Studente studente){
+    public Studente update(Integer matricola, StudenteDto studenteDto){
         Studente studenteDaAggiornare = studenteRepository.findById(matricola).get();
+
+        Studente studente = dtoToEntity(studenteDto);
 
         studenteDaAggiornare.setNome(studente.getNome());
         studenteDaAggiornare.setCognome(studente.getCognome());
@@ -41,6 +47,17 @@ public class StudenteService {
 
     public List<Studente> getAll(){
         return studenteRepository.findAll();
+    }
+
+    private Studente dtoToEntity(StudenteDto studenteDto){
+        Studente studente = new Studente();
+
+        studente.setNome(studenteDto.getNome());
+        studente.setCognome(studenteDto.getCognome());
+        studente.setCitta(studenteDto.getCitta());
+        studente.setDataNascita(studenteDto.getDataNascita());
+
+        return studente;
     }
     
 }
