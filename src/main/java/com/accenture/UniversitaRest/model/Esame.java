@@ -12,19 +12,16 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "studenti")
-public class Studente {
-
+@Table(name = "esami")
+public class Esame {
     @Id
     @GeneratedValue
-    private Integer matricola;
+    private Integer id;
 
     private String nome;
-    private String cognome;
-    private String citta;
-    private LocalDate dataNascita;
-
-    @OneToMany(mappedBy = "studente")
+    private String aula;
+   
+    @OneToMany(mappedBy = "esame")
     private List<StudenteEsame> studentiEsami;
-
+    
 }
