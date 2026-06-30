@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.stereotype.Service;
 
 import com.accenture.UniversitaRest.dto.StudenteDto;
+import com.accenture.UniversitaRest.exception.NotFoundException;
 import com.accenture.UniversitaRest.model.Studente;
 import com.accenture.UniversitaRest.repository.StudenteRepository;
 
@@ -20,11 +21,13 @@ public class StudenteService {
         //questo metodo converte il dto nell'entità che andrà salvata nel db
         Studente studente = dtoToEntity(studenteDto);
 
+        System.out.println(studente);
+
         return studenteRepository.save(studente);
     }
 
     public Studente update(Integer matricola, StudenteDto studenteDto){
-        Studente studenteDaAggiornare = studenteRepository.findById(matricola).get();
+        Studente studenteDaAggiornare = studenteRepository.findById(matricola).orElseThrow(()->new NotFoundException("Studente con matricola " + matricola + " non trovata"));
 
         Studente studente = dtoToEntity(studenteDto);
 
@@ -42,7 +45,7 @@ public class StudenteService {
     }
 
     public Studente getByMatricola(Integer matricola){
-        return studenteRepository.findById(matricola).get();
+        return studenteRepository.findById(matricola).orElseThrow(()->new NotFoundException("Studente con matricola " + matricola + " non trovata"));
     }
 
     public List<Studente> getAll(){

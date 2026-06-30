@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.accenture.UniversitaRest.dto.EsameDto;
 import com.accenture.UniversitaRest.dto.StudenteDto;
+import com.accenture.UniversitaRest.exception.NotFoundException;
 import com.accenture.UniversitaRest.model.Esame;
 import com.accenture.UniversitaRest.model.Studente;
 import com.accenture.UniversitaRest.repository.EsameRepository;
@@ -26,7 +27,7 @@ public class EsameService {
     }
 
     public Esame update(Integer id, EsameDto esameDto){
-        Esame esameDaAggiornare = esameRepository.findById(id).get();
+        Esame esameDaAggiornare = esameRepository.findById(id).orElseThrow(()->new NotFoundException("Esame con id " + id + " non trovato"));
 
         Esame esame = dtoToEntity(esameDto);
 
@@ -43,7 +44,7 @@ public class EsameService {
     }
 
     public Esame getById(Integer id){
-        return esameRepository.findById(id).get();
+        return esameRepository.findById(id).orElseThrow(()->new NotFoundException("Esame con id " + id + " non trovato"));
     }
 
     public List<Esame> getAll(){

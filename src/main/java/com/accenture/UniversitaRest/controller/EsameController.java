@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,57 +14,53 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.accenture.UniversitaRest.dto.EsameDto;
 import com.accenture.UniversitaRest.dto.StudenteDto;
 import com.accenture.UniversitaRest.exception.BadRequestException;
+import com.accenture.UniversitaRest.model.Esame;
 import com.accenture.UniversitaRest.model.Studente;
+import com.accenture.UniversitaRest.service.EsameService;
 import com.accenture.UniversitaRest.service.StudenteService;
 
 @RestController
-public class StudenteController {
+public class EsameController {
 
     @Autowired
-    private StudenteService studenteService;
+    private EsameService esameService;
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/studenti")
-    public Studente save(@RequestBody @Validated StudenteDto studenteDto, BindingResult bindingResult){
+    @PostMapping("/esami")
+    public Esame save(@RequestBody @Validated EsameDto esameDto, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             
             throw new BadRequestException(bindingResult.getAllErrors().stream().map(e->e.getDefaultMessage()).collect(Collectors.joining(", ")));
         }
 
-        System.out.println(studenteDto);
-
-        return studenteService.save(studenteDto);
+        return esameService.save(esameDto);
     }
 
-    @PutMapping("/studenti/{matricola}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public Studente update(@PathVariable Integer matricola, @RequestBody @Validated StudenteDto studenteDto, BindingResult bindingResult){
+    @PutMapping("/esami/{id}")
+    public Esame update(@PathVariable Integer id, @RequestBody @Validated EsameDto esameDto, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             
             throw new BadRequestException(bindingResult.getAllErrors().stream().map(e->e.getDefaultMessage()).collect(Collectors.joining(", ")));
         }
 
-        return studenteService.update(matricola, studenteDto);
+        return esameService.update(id, esameDto);
     }
 
-    @DeleteMapping("/studenti/{matricola}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public void delete(@PathVariable Integer matricola){
-        studenteService.delete(matricola);
+    @DeleteMapping("/esami/{id}")
+    public void delete(@PathVariable Integer id){
+        esameService.delete(id);
     }
 
-    @GetMapping("/studenti/{matricola}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public Studente getByMatricola(@PathVariable Integer matricola){
-        return studenteService.getByMatricola(matricola);
+    @GetMapping("/esami/{id}")
+    public Esame getById(@PathVariable Integer id){
+        return esameService.getById(id);
     }
 
-    @GetMapping("/studenti")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public List<Studente> getAll(){
-        return studenteService.getAll();
+    @GetMapping("/esami")
+    public List<Esame> getAll(){
+        return esameService.getAll();
     }
     
 }
